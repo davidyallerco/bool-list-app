@@ -30,7 +30,9 @@ const listBook: Book[] = [
         amount:7
     }
 ];
-
+const bookServiceMock = {
+    getBooks: ()=> of(listBook);
+};
 describe('Home component',()=> {
     let component: HomeComponent;
     let fixture: ComponentFixture<HomeComponent>;
@@ -44,7 +46,11 @@ describe('Home component',()=> {
                 HomeComponent
             ],
             providers:[
-                BookService
+                // BookService
+                { //### mockear servicio
+                    provide: BookService,//cuando el componente utilise el servicio BoolService, utilice el objeto userValue
+                    useValue: bookServiceMock
+                }
             ],
             schemas:[
                 CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA
@@ -63,13 +69,10 @@ describe('Home component',()=> {
         expect(component).toBeTruthy();
     });
 
-    //test a suscriber observable
+    //test a suscriber observable #### se eliminoa unas lineas , ya no era necesario
     it('getBook get books from the subscription',()=>{
         const bookService = fixture.debugElement.injector.get(BookService);
-        // const listBook: Book[] = [];
-        const spy1 = spyOn(bookService, 'getBooks').and.returnValue(of(listBook));
         component.getBooks();
-        expect(spy1).toHaveBeenCalled();
         expect(component.listBook.length).toBe(3);//es tres porque el array de book es tres
     });
 
