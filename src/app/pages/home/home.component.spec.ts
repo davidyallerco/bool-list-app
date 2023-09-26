@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from "@angular/core";
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, Pipe, PipeTransform } from "@angular/core";
 import { HomeComponent } from "./home.component";
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientModule } from "@angular/common/http";
@@ -31,24 +31,37 @@ const listBook: Book[] = [
     }
 ];
 const bookServiceMock = {
-    getBooks: ()=> of(listBook);
+    getBooks: ()=> of(listBook),
 };
+//### simularemos mockearemos un pipe, en el html hay un pipe que llama
+@Pipe
+({name: 'reduceText'})
+class ReduceTextPipeMock implements PipeTransform{
+    transform(): string {
+        return '';
+    }
+}
+//....####
+
 describe('Home component',()=> {
     let component: HomeComponent;
     let fixture: ComponentFixture<HomeComponent>;
 
+    beforeAll(()=>{
+        
+    });
     beforeEach(()=>{
         TestBed.configureTestingModule({
             imports:[
                 HttpClientModule
             ],
             declarations:[
-                HomeComponent
+                HomeComponent,
+                ReduceTextPipeMock
             ],
             providers:[
-                // BookService
-                { //### mockear servicio
-                    provide: BookService,//cuando el componente utilise el servicio BoolService, utilice el objeto userValue
+                { 
+                    provide: BookService,
                     useValue: bookServiceMock
                 }
             ],
@@ -69,11 +82,11 @@ describe('Home component',()=> {
         expect(component).toBeTruthy();
     });
 
-    //test a suscriber observable #### se eliminoa unas lineas , ya no era necesario
+    //test a suscriber observable 
     it('getBook get books from the subscription',()=>{
         const bookService = fixture.debugElement.injector.get(BookService);
         component.getBooks();
-        expect(component.listBook.length).toBe(3);//es tres porque el array de book es tres
+        expect(component.listBook.length).toBe(3);
     });
 
 
