@@ -150,4 +150,6 @@ describe('Cart component', () => {
         expect(spy1).toHaveBeenCalled();
     });
 
+    
+
 });
